@@ -1,0 +1,15 @@
+# Python / Django
+venv/
+*.pyc
+__pycache__/
+*.sqlite3
+*.coverage
+.env
+*.log
+htmlcove
+
+# Media (fotos, uploads)
+media/
+
+# VS Code
+.vscode/

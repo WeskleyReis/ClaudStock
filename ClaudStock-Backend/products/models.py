@@ -42,7 +42,7 @@ class Product(models.Model):
 
         if self.photo:
             img = Image.open(self.photo.path)
-            targe_size = (320, 320)
+            targe_size = (240, 240)
 
             img_ratio = img.width / img.height
             targe_ratio = targe_size[0] / targe_size[1]

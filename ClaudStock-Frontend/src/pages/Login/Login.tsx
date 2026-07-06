@@ -1,13 +1,17 @@
 import { useState } from "react";
-import { Package, ChartColumn, ShieldCheck, UserRound, LockKeyhole, Eye, EyeOff, LockOpen } from "lucide-react";
+import { Package, ChartColumn, ShieldCheck, UserRound, LockKeyhole, Eye, EyeOff, Lock, LockOpen, CircleAlert } from "lucide-react";
 import icon from "../../assets/icons/Icon.png"
 import { FeatureCard } from "../../components/FeatureCard/FeatureCard";
 import { login } from "../../api/auth";
+import { useNavigate } from "react-router-dom";
 
 export function Login() {
     const [ mostrarSenha, setMostrarSenha ] = useState(false)
     const [ user, setUser ] = useState("")
     const [ password, setPassword ] = useState("")
+    const [ error, setError ] = useState("")
+    const [ loading, setLoading ] = useState(false)
+    const navigate = useNavigate()
 
     const toggleSenhaVisivel = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -16,10 +20,24 @@ export function Login() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    const response = await login(user, password)
-    
-    localStorage.setItem("access", response.data.access)
-    localStorage.setItem("refresh", response.data.refresh)
+
+    setError("")
+    setLoading(true)
+
+    try {
+      const response = await login(user, password)
+      
+      localStorage.setItem("access", response.data.access)
+      localStorage.setItem("refresh", response.data.refresh)
+      
+      navigate("/dashboard")
+    } catch {
+      setError("Usuário ou Senha inválidos")
+      setPassword("")
+    } finally {
+      setLoading(false)
+    }
+
   }
 
   return (
@@ -101,11 +119,11 @@ export function Login() {
       </section>
       <section className="w-full h-screen flex flex-col gap-6 items-center justify-center">
         <form
-          className="p-12 bg-white flex gap-12 flex-col justify-center rounded-xl shadow-2xl"
+          className="p-12 bg-white flex gap-10 flex-col justify-center rounded-xl shadow-2xl"
           onSubmit={handleLogin}
         >
           <div className="flex flex-col items-center">
-            <img src={icon} alt="Icone CloudStock" className="w-38" />
+            <img src={icon} alt="Icone CloudStock" className="w-34" />
             <p className="text-4xl font-bold">Bem-vindo de volta!</p>
             <p className="text-base">Faça login para acessar sua conta</p>
           </div>
@@ -170,9 +188,23 @@ export function Login() {
                 </button>
               </label>
             </div>
+            {error && (
+              <div
+                className="
+                  rounded-xl border border-red-300 bg-red-50 p-4
+                  flex gap-4 items-center
+                "
+              >
+                <CircleAlert size={24} className="text-red-600" />
+                <p className="text-sm text-red-600">
+                  {error}
+                </p>
+              </div>
+            )}
           </div>
           <button
             type="submit"
+            disabled={loading}
             className="
               h-16 text-2xl font-bold p-4
               bg-black text-white
@@ -180,10 +212,11 @@ export function Login() {
               hover:border-2 hover:border-gray-400 hover:scale-[1.02] active:scale-[1.0]
               transition-all hover:duration-300 active:duration-0 ease-in-out
               cursor-pointer
+              disabled:cursor-not-allowed disabled:opacity-50
             "
           >
-            <LockOpen size={24} />
-            Entrar
+            {loading? <LockOpen size={24} />  : <Lock size={24} />}
+            {loading ? "Entrando..." : "Entrar"}
           </button>
         </form>
         <footer className="text-xs text-gray-400">Versão 1.0.0</footer>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Package, ChartColumn, ShieldCheck, UserRound, LockKeyhole, Eye, EyeOff, Lock, LockOpen, CircleAlert } from "lucide-react";
 import icon from "../../assets/icons/Icon.png"
 import { FeatureCard } from "../../components/FeatureCard/FeatureCard";
@@ -11,7 +11,16 @@ export function Login() {
     const [ password, setPassword ] = useState("")
     const [ error, setError ] = useState("")
     const [ loading, setLoading ] = useState(false)
+
     const navigate = useNavigate()
+
+    useEffect(() => {
+      const token = localStorage.getItem("access")
+
+      if (token) {
+        navigate("/dashboard")
+      }
+    }, [navigate])
 
     const toggleSenhaVisivel = (e: React.MouseEvent) => {
     e.preventDefault()

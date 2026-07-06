@@ -2,13 +2,24 @@ import { useState } from "react";
 import { Package, ChartColumn, ShieldCheck, UserRound, LockKeyhole, Eye, EyeOff, LockOpen } from "lucide-react";
 import icon from "../../assets/icons/Icon.png"
 import { FeatureCard } from "../../components/FeatureCard/FeatureCard";
+import { login } from "../../api/auth";
 
 export function Login() {
-    const [mostrarSenha, setMostrarSenha] = useState(false)
+    const [ mostrarSenha, setMostrarSenha ] = useState(false)
+    const [ user, setUser ] = useState("")
+    const [ password, setPassword ] = useState("")
 
     const toggleSenhaVisivel = (e: React.MouseEvent) => {
     e.preventDefault()
     setMostrarSenha(!mostrarSenha)
+  }
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const response = await login(user, password)
+    
+    localStorage.setItem("access", response.data.access)
+    localStorage.setItem("refresh", response.data.refresh)
   }
 
   return (
@@ -89,13 +100,18 @@ export function Login() {
         </div>
       </section>
       <section className="w-full h-screen flex flex-col gap-6 items-center justify-center">
-        <div className="p-14 bg-white flex gap-12 flex-col justify-center rounded-xl shadow-2xl">
+        <form
+          className="p-12 bg-white flex gap-12 flex-col justify-center rounded-xl shadow-2xl"
+          onSubmit={handleLogin}
+        >
           <div className="flex flex-col items-center">
             <img src={icon} alt="Icone CloudStock" className="w-38" />
             <p className="text-4xl font-bold">Bem-vindo de volta!</p>
             <p className="text-base">Faça login para acessar sua conta</p>
           </div>
-          <div className="flex flex-col gap-6 w-2xl">
+          <div
+            className="flex flex-col gap-6 w-2xl"
+          >
             <div className="flex flex-col gap-2">
               <label className="text-2xl font-bold">Usuário</label>
               <label
@@ -114,6 +130,8 @@ export function Login() {
                   type="text"
                   placeholder="Digite seu usuário"
                   autoComplete="username"
+                  value={user}
+                  onChange={(e) => setUser(e.target.value)}
                 />
               </label>
             </div>
@@ -135,6 +153,8 @@ export function Login() {
                   type={mostrarSenha ? "text" : "password"}
                   placeholder="Digite a sua senha"
                   autoComplete="current-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
                 <button 
                   type="button"
@@ -151,7 +171,8 @@ export function Login() {
               </label>
             </div>
           </div>
-          <button 
+          <button
+            type="submit"
             className="
               h-16 text-2xl font-bold p-4
               bg-black text-white
@@ -164,7 +185,7 @@ export function Login() {
             <LockOpen size={24} />
             Entrar
           </button>
-        </div>
+        </form>
         <footer className="text-xs text-gray-400">Versão 1.0.0</footer>
       </section>
     </main>

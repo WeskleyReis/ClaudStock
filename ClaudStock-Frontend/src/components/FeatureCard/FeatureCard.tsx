@@ -6,7 +6,7 @@ interface FeatureCardProps {
   description: string
 }
 
-export function FeatureCard ({
+export function FeatureCard({
   icon: Icon,
   title,
   description

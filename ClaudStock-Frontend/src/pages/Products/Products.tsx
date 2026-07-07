@@ -1,6 +1,6 @@
 import { NavBar } from "../../components/NavBar/NavBar";
 
-export function Dashboard() {
+export function Products() {
   return (
     <main className="flex min-h-screen bg-gray-100">
       <NavBar />

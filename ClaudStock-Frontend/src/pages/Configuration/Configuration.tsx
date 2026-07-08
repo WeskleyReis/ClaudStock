@@ -2,10 +2,50 @@ import {CloudUpload, Upload, Download, Info, Palette, Sun, Moon, RotateCw, Check
 import icon from "../../assets/icons/Icon.png"
 import { NavBar } from "../../components/NavBar/NavBar"
 import { useTheme } from "../../hooks/useTheme"
+import React, { useRef } from "react"
+import { exportCSV, importCSV } from "../../api/backups"
 
 
 export function Configuration() {
   const { theme, setTheme } = useTheme()
+  const inputFileRef = useRef<HTMLInputElement>(null)
+
+  const handleImport = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0]
+
+    if (!file) return
+
+    try {
+      await importCSV(file)
+
+      e.target.value = ""
+
+      alert ("Produtos importados com sucesso!")
+    } catch {
+      alert ("Erro ao importar aquivo.")
+    }
+  }
+
+  const handleExport = async () => {
+    try {
+      const blob = await exportCSV()
+
+      const url = window.URL.createObjectURL(blob)
+
+      const a = document.createElement("a")
+
+      a.href = url
+      a.download = "produtos-claudstock.csv"
+
+      a.click()
+
+      window.URL.revokeObjectURL(url)
+    } catch {
+      alert("Erro ao exportar arquivo.")
+    }
+  }
 
   return (
     <main className="flex min-h-screen bg-gray-100 dark:bg-neutral-900">
@@ -38,7 +78,15 @@ export function Configuration() {
             </div>
             <p className="text-base">Faça Backup dos seus dados ou impora um arquivo de backup</p>
             <div className="w-full flex gap-12">
+              <input
+                ref={inputFileRef}
+                type="file"
+                accept=".csv"
+                hidden
+                onChange={handleImport}
+              />
               <button 
+                onClick={() => inputFileRef.current?.click()}
                 className="
                   px-6 py-4 border-2 border-neutral-400 rounded-xl
                   flex-1 flex gap-6 items-center
@@ -52,6 +100,7 @@ export function Configuration() {
                 </div>
               </button>
               <button 
+                onClick={handleExport}
                 className="
                   px-6 py-4 border-2 border-neutral-400 rounded-xl
                   flex-1 flex gap-6 items-center

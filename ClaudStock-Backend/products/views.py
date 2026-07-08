@@ -5,7 +5,6 @@ from rest_framework.decorators import action
 from products.models import Product, Category
 from products.serializers import ProductSerializer
 from django.http import HttpResponse
-from django.db import transaction
 
 import csv
 from io import TextIOWrapper
@@ -45,7 +44,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = (
-            'attachment; filename="produtos-cloudstock.csv"'
+            'attachment; filename="produtos-claudstock.csv"'
         )
         writer = csv.writer(response)
 
@@ -63,7 +62,7 @@ class ProductViewSet(viewsets.ModelViewSet):
             writer.writerow([
                 product.id, 
                 product.name,
-                product.category,
+                product.category.name,
                 product.price, 
                 product.quantity, 
                 product.barcode,
@@ -86,20 +85,23 @@ class ProductViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        csv_file = TextIOWrapper(file.file, encoding="utf-8")
+        csv_file = TextIOWrapper(file.file, encoding="utf-8-sig")
         reader = csv.DictReader(csv_file)
 
         total = 0
 
         for row in reader:
-            category, _ = Category.objects.update_or_create(
+            category, _ = Category.objects.get_or_create(
                 name=row['category']
             )
             Product.objects.update_or_create(
-                name=row['name'],
-                category=category,
-                price=row['price'],
                 barcode=row['barcode'],
+                defaults={
+                    "name": row['name'],
+                    "category": category,
+                    "price": Decimal(row['price']),
+                    "quantity": int(row.get('quantity') or 0),
+                }
             )
 
             total += 1

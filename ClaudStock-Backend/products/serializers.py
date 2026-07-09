@@ -30,3 +30,27 @@ class ProductSerializer(serializers.ModelSerializer):
             instance.category = category
 
         return super().update(instance, validated_data)
+    
+class LowStockSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ('id', 'name', 'quantity')
+
+class CategorySummarySerializer(serializers.ModelSerializer):
+    products = serializers.IntegerField()
+
+    class Meta:
+        model = Category
+        fields = ('name', 'products')
+
+class DashboardSerializer(serializers.Serializer):
+    total_products = serializers.IntegerField()
+    total_category = serializers.IntegerField()
+    stock_quantity = serializers.IntegerField()
+    stock_value = serializers.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+    )
+
+    low_stock = LowStockSerializer(many=True)
+    categories = CategorySummarySerializer(many=True)

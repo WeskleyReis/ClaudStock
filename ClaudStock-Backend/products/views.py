@@ -3,8 +3,9 @@ from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser
 from rest_framework.decorators import action
 from products.models import Product, Category
-from products.serializers import ProductSerializer
+from products.serializers import ProductSerializer, DashboardSerializer
 from django.http import HttpResponse
+from django.db.models import F, Sum, Count, DecimalField
 
 import csv
 from io import TextIOWrapper
@@ -113,3 +114,37 @@ class ProductViewSet(viewsets.ModelViewSet):
             },
             status=status.HTTP_201_CREATED
         )
+    
+    @action(
+        detail=False,
+        methods=['get']
+    )
+    def dashboard(self, request) :
+        total_products = Product.objects.count()
+        total_category = Category.objects.count()
+
+        stock_quantity = Product.objects.aggregate(total=Sum('quantity'))['total'] or 0
+
+        stock_value = Product.objects.aggregate(
+            total=Sum(
+                F('price') * F('quantity'),
+                output_field=DecimalField(max_digits=12, decimal_places=2)
+            )
+        )['total'] or 0
+
+        low_stock = Product.objects.filter(quantity__lte=3)
+
+        categories = Category.objects.annotate(products=Count("product"))
+
+        serializer = DashboardSerializer(
+            instance={
+                "total_products": total_products,
+                "total_category": total_category,
+                "stock_quantity": stock_quantity,
+                "stock_value": stock_value,
+                "low_stock": list(low_stock),
+                "categories": list(categories),
+            }
+        )
+
+        return Response(serializer.data)

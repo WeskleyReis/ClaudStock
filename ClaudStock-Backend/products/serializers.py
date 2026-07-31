@@ -44,6 +44,8 @@ class CategorySummarySerializer(serializers.ModelSerializer):
         fields = ('name', 'products')
 
 class DashboardSerializer(serializers.Serializer):
+    username = serializers.CharField()
+
     total_products = serializers.IntegerField()
     total_category = serializers.IntegerField()
     stock_quantity = serializers.IntegerField()

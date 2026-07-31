@@ -17,8 +17,8 @@ export function NavItem({
       to={to}
       className={({ isActive }) => 
       `
-        w-full py-4 px-6 cursor-pointer
-        ${ isActive ? "bg-neutral-900": ""}
+        w-full py-4 px-6 cursor-pointer border-l-4 border-neutral-800
+        ${ isActive ? "bg-neutral-900 border-white ": ""}
       `
       }
     >

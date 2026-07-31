@@ -138,6 +138,8 @@ class ProductViewSet(viewsets.ModelViewSet):
 
         serializer = DashboardSerializer(
             instance={
+                "username": request.user.username,
+
                 "total_products": total_products,
                 "total_category": total_category,
                 "stock_quantity": stock_quantity,

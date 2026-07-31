@@ -1,4 +1,6 @@
 export interface DashboardData {
+  username: string
+
   total_products: number
   total_category: number
   stock_quantity: number

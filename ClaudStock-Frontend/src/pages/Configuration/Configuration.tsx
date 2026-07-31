@@ -1,4 +1,4 @@
-import {CloudUpload, Upload, Download, Info, Palette, Sun, Moon, RotateCw, Check } from "lucide-react"
+import { CloudUpload, Upload, Download, Info, Palette, Sun, Moon, RotateCw, Check } from "lucide-react"
 import icon from "../../assets/icons/Icon.png"
 import { NavBar } from "../../components/NavBar/NavBar"
 import { useTheme } from "../../hooks/useTheme"
@@ -123,7 +123,7 @@ export function Configuration() {
               <Info size={20} className="text-blue-500" />
               <p className="text-sm">
                 <span className="font-bold">DICA: </span>
-                Reconmedamos fazer backups regulares dos seus dados.
+                Recomendamos fazer backups regulares dos seus dados.
               </p>
             </div>
           </div>

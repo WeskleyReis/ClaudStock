@@ -2,7 +2,7 @@ import { NavBar } from "../../components/NavBar/NavBar";
 
 export function Products() {
   return (
-    <main className="flex min-h-screen bg-gray-100">
+    <main className="flex min-h-screen bg-gray-100 dark:bg-neutral-900">
       <NavBar />
       <section
         className="

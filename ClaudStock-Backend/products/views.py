@@ -6,6 +6,8 @@ from products.models import Product, Category
 from products.serializers import ProductSerializer, DashboardSerializer
 from django.http import HttpResponse
 from django.db.models import F, Sum, Count, DecimalField
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 import csv
 from io import TextIOWrapper
@@ -16,6 +18,32 @@ from decimal import Decimal
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all().select_related('category')
     serializer_class = ProductSerializer
+
+    filter_backends = [
+        DjangoFilterBackend,
+        SearchFilter,
+        OrderingFilter,
+    ]
+
+    search_fields = [
+        "name",
+        "barcode",
+        "category__name",
+    ]
+
+    filterset_fields = [
+        "category__name",
+    ]
+
+    odering_fields = [
+        "name",
+        "price",
+        "quantity",
+    ]
+
+    odering = [
+        "name",
+    ]
 
     @action(
             detail=False,

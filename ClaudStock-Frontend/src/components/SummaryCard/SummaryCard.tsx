@@ -18,7 +18,7 @@ export function SummaryCard({
   return (
     <div
       className="
-        p-6 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-400 rounded-xl shadow-md
+        px-8 py-6 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-400 rounded-xl shadow-md
         flex flex-col gap-4 items-center
       "
     >
